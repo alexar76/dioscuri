@@ -1,0 +1,72 @@
+# DIOSCURI — Docker Compose deployment.
+#
+# First-time setup:
+#   1. cp dioscuri.config.example.json dioscuri.config.json   # then edit to taste
+#   2. cp .env.example .env                                    # add your secrets
+#         TELEGRAM_BOT_TOKEN / DISCORD_BOT_TOKEN, DEEPSEEK_API_KEY or ANTHROPIC_API_KEY, ...
+#   3. docker compose up -d --build
+#
+# Either platform token may be left empty — the corresponding twin simply stays
+# asleep. With DIOSCURI_DRY_RUN=1 no tokens are needed at all: the knowledge base
+# and the /health endpoint still run, which is the recommended first smoke test.
+#
+# The container is hardened by default: non-root, read-only rootfs (state lives in
+# the dioscuri-data volume), all capabilities dropped, no privilege escalation,
+# memory/CPU capped. Loosen only if you know why.
+
+services:
+  dioscuri:
+    build: .
+    image: aicom/dioscuri:0.1
+    container_name: dioscuri
+    restart: unless-stopped
+    stop_grace_period: 30s
+    init: true
+
+    # Secrets only — never committed, never baked into the image.
+    env_file: .env
+
+    environment:
+      DIOSCURI_DATA_DIR: /data
+
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+
+    ports:
+      - "8790:8790"
+
+    volumes:
+      # Runtime tuning config, mounted read-only (not baked into the image).
+      - ./dioscuri.config.json:/app/dioscuri.config.json:ro
+      # Persistent state: hash-chained audit log, MNEMOSYNE knowledge cache.
+      - dioscuri-data:/data
+
+    # Everything outside /data and /tmp is immutable at runtime.
+    read_only: true
+    tmpfs:
+      - /tmp
+
+    security_opt:
+      - no-new-privileges:true
+    cap_drop:
+      - ALL
+
+    mem_limit: 384m
+    cpus: 0.50
+
+    # Mirrors the Dockerfile HEALTHCHECK — probes /health via Node's global fetch.
+    healthcheck:
+      test: ["CMD", "node", "-e", "fetch('http://127.0.0.1:'+(process.env.DIOSCURI_HTTP_PORT||8790)+'/health').then(r=>process.exit(r.ok?0:1)).catch(()=>process.exit(1))"]
+      interval: 30s
+      timeout: 5s
+      start_period: 15s
+      retries: 3
+
+    logging:
+      driver: json-file
+      options:
+        max-size: "10m"
+        max-file: "3"
+
+volumes:
+  dioscuri-data:
