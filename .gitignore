@@ -1,0 +1,22 @@
+# Secrets — never commit. Real config is mounted at runtime.
+.env
+dioscuri.config.json
+
+# Runtime state (knowledge cache, audit chain, rate-limit snapshots).
+data/
+*.log
+/content-queue.json
+/data-content-queue.json
+
+# Screenshot sidecar — Playwright browser cache + Python venv on the host.
+.playwright-browsers/
+venv-screenshot/
+venv/
+.venv/
+__pycache__/
+*.py[cod]
+
+# Build & tooling output.
+node_modules/
+dist/
+coverage/
