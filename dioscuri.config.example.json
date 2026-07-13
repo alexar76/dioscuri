@@ -1,0 +1,59 @@
+{
+  "githubOwner": "alexar76",
+  "githubRepos": ["theoros", "aicom", "metis", "dioscuri", "argus", "aimarket-hub", "oracles"],
+  "kbSyncIntervalMin": 60,
+  "promoIntervalHours": 12,
+  "maxLlmCallsPerDay": 2000,
+  "userRatePerMin": 4,
+  "channelRatePerMin": 20,
+  "moderation": {
+    "enabled": true,
+    "llmClassifier": true,
+    "deleteConfidence": 0.8,
+    "maxTimeoutMs": 600000,
+    "linkAllowlist": [],
+    "linkDenylist": ["bit.ly", "grabify.link", "iplogger.org"]
+  },
+  "links": {
+    "discordInvite": "https://discord.gg/REPLACE_ME",
+    "telegramChannel": "https://t.me/REPLACE_ME",
+    "telegramBot": "https://t.me/REPLACE_ME_bot",
+    "siteUrl": "https://alexar76.github.io/dioscuri/",
+    "githubOrg": "https://github.com/alexar76",
+    "theorosUrl": "https://alexar76.github.io/theoros/"
+  },
+  "showcase": {
+    "enabled": true,
+    "intervalMin": 10,
+    "sources": [
+      { "name": "alien-monitor", "url": "https://magic-ai-factory.com/monitor/api/health", "kind": "json" },
+      { "name": "monitor-chain", "url": "https://magic-ai-factory.com/monitor/api/chain/status", "kind": "json" }
+    ]
+  },
+  "content": {
+    "enabled": true,
+    "maxPostsPerDay": 3,
+    "quietHoursUtc": [22, 7],
+    "slots": [
+      { "kind": "spotlight", "day": "mon", "hourUtc": 15 },
+      { "kind": "banter", "day": "tue", "hourUtc": 17 },
+      { "kind": "poll", "day": "wed", "hourUtc": 15 },
+      { "kind": "spotlight", "day": "thu", "hourUtc": 16 },
+      { "kind": "digest", "day": "fri", "hourUtc": 15 },
+      { "kind": "banter", "day": "sat", "hourUtc": 17 },
+      { "kind": "show-and-tell", "day": "sat", "hourUtc": 14 },
+      { "kind": "canon", "day": "sun", "hourUtc": 16 }
+    ],
+    "topics": [
+      "what shipped recently across the ecosystem (fresh commits and releases)",
+      "AI Factory — the autonomous product pipeline",
+      "verifiable oracles (LUMEN, CHRONOS, PLATON and the oracle family)",
+      "AIMarket — the agent economy and paid MCP invokes",
+      "ARGUS personal agent and the WARDEN MCP firewall",
+      "Alien Monitor — the 3D ecosystem observatory",
+      "the on-chain lottery on Base",
+      "MCP integrations and the hub federation",
+      "agent reputation and LUMEN trust scoring"
+    ]
+  }
+}
