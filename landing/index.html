@@ -1,0 +1,674 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>DIOSCURI — one mind, two heavens</title>
+<meta name="description" content="CASTOR rides Telegram. POLLUX holds Discord. One shared memory — MNEMOSYNE. One shield — AEGIS. Twin community agents for the AICOM open agent economy." />
+<meta property="og:type" content="website" />
+<meta property="og:title" content="DIOSCURI — twin community agents" />
+<meta property="og:description" content="The Dioscuri split one immortality between two skies. Community Q&A, moderation, and release fan-out for the AICOM ecosystem." />
+<meta property="og:url" content="https://alexar76.github.io/dioscuri/" />
+<meta name="twitter:card" content="summary_large_image" />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@500;700;900&family=Outfit:wght@300;400;600;700&display=swap" rel="stylesheet" />
+<style>
+  :root {
+    --void: #03040c;
+    --void-2: #070b18;
+    --panel: rgba(10, 16, 34, 0.62);
+    --brd: rgba(120, 150, 220, 0.22);
+    --ink: #dce8ff;
+    --muted: #8aa0cc;
+    --faint: #5a7098;
+    --castor: #ffb347;
+    --castor-glow: #ff8c42;
+    --pollux: #7b5cff;
+    --pollux-glow: #38e0ff;
+    --gold: #ffd56a;
+    --good: #4dffb8;
+    --head: 'Cinzel', Georgia, serif;
+    --body: 'Outfit', system-ui, sans-serif;
+    --maxw: 1120px;
+    --radius: 18px;
+  }
+  * { box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+  body {
+    margin: 0; background: var(--void); color: var(--ink);
+    font-family: var(--body); font-size: 17px; line-height: 1.58;
+    -webkit-font-smoothing: antialiased; overflow-x: hidden;
+  }
+  #sky { position: fixed; inset: 0; z-index: 0; display: block; }
+  .nebula {
+    position: fixed; inset: 0; z-index: 0; pointer-events: none;
+    background:
+      radial-gradient(42vw 42vw at 12% 18%, rgba(255, 140, 66, 0.14), transparent 62%),
+      radial-gradient(46vw 46vw at 88% 22%, rgba(123, 92, 255, 0.16), transparent 62%),
+      radial-gradient(55vw 55vw at 50% 108%, rgba(56, 224, 255, 0.08), transparent 60%);
+    mix-blend-mode: screen;
+  }
+  .thread {
+    position: fixed; left: 50%; top: 38%; width: 2px; height: 28vh; z-index: 1;
+    transform: translateX(-50%);
+    background: linear-gradient(180deg, transparent, rgba(255, 213, 106, 0.55), rgba(123, 92, 255, 0.55), transparent);
+    filter: blur(0.4px); opacity: 0.55; pointer-events: none;
+    animation: pulse-thread 4.5s ease-in-out infinite;
+  }
+  @keyframes pulse-thread { 0%,100% { opacity: 0.35; } 50% { opacity: 0.75; } }
+  .wrap { position: relative; z-index: 2; max-width: var(--maxw); margin: 0 auto; padding: 0 22px; }
+
+  nav {
+    position: sticky; top: 0; z-index: 50;
+    backdrop-filter: blur(14px);
+    background: linear-gradient(180deg, rgba(3,4,12,0.92), rgba(3,4,12,0.45));
+    border-bottom: 1px solid var(--brd);
+  }
+  nav .row { display: flex; align-items: center; justify-content: space-between; height: 62px; gap: 16px; }
+  .brand {
+    display: flex; align-items: center; gap: 12px;
+    font-family: var(--head); font-weight: 900; letter-spacing: 0.22em; font-size: 15px;
+  }
+  .brand .gem {
+    width: 16px; height: 16px; border-radius: 50%;
+    background: conic-gradient(from 210deg, var(--castor), var(--gold), var(--pollux), var(--pollux-glow));
+    box-shadow: 0 0 16px rgba(255, 179, 71, 0.55), 0 0 28px rgba(123, 92, 255, 0.45);
+    animation: gemspin 8s linear infinite;
+  }
+  @keyframes gemspin { to { filter: hue-rotate(360deg); } }
+  .nav-links { display: flex; gap: 22px; align-items: center; flex-wrap: wrap; }
+  .nav-links a {
+    color: var(--muted); text-decoration: none; font-size: 13px; font-weight: 600;
+    letter-spacing: 0.12em; text-transform: uppercase; transition: color 0.2s, text-shadow 0.2s;
+  }
+  .nav-links a:hover { color: var(--pollux-glow); text-shadow: 0 0 14px rgba(56,224,255,0.45); }
+  .langsw { display: inline-flex; gap: 2px; border: 1px solid var(--brd); border-radius: 999px; padding: 3px; background: rgba(120,150,220,0.06); }
+  .langsw button { background: none; border: 0; color: var(--muted); font: 600 12px/1 var(--body); letter-spacing: 0.08em; padding: 5px 9px; border-radius: 999px; cursor: pointer; }
+  .langsw button.on { background: rgba(123, 92, 255, 0.22); color: var(--gold); }
+
+  header { text-align: center; padding: 88px 0 56px; }
+  .eyebrow {
+    display: inline-flex; align-items: center; gap: 10px;
+    font-family: var(--head); font-size: 11px; letter-spacing: 0.28em; text-transform: uppercase;
+    color: var(--gold); border: 1px solid rgba(255, 213, 106, 0.35);
+    background: rgba(255, 179, 71, 0.06); padding: 8px 18px; border-radius: 999px; margin-bottom: 26px;
+  }
+  .eyebrow .pip {
+    width: 7px; height: 7px; border-radius: 50%; background: var(--good);
+    box-shadow: 0 0 0 0 rgba(77, 255, 184, 0.55); animation: ping 2.4s infinite;
+  }
+  @keyframes ping { 0% { box-shadow: 0 0 0 0 rgba(77,255,184,0.5); } 70% { box-shadow: 0 0 0 10px rgba(77,255,184,0); } 100% { box-shadow: 0 0 0 0 rgba(77,255,184,0); } }
+  h1 {
+    font-family: var(--head); font-weight: 900; font-size: clamp(38px, 7vw, 78px);
+    letter-spacing: 0.14em; margin: 0 0 16px; line-height: 1.05;
+    background: linear-gradient(95deg, var(--castor) 0%, var(--gold) 35%, var(--pollux-glow) 65%, var(--pollux) 100%);
+    -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent;
+    text-shadow: 0 0 60px rgba(123, 92, 255, 0.25);
+  }
+  .myth {
+    max-width: 680px; margin: 0 auto 12px; font-size: clamp(18px, 2.6vw, 23px); font-weight: 300;
+    color: var(--ink); font-style: italic;
+  }
+  .lede { max-width: 620px; margin: 0 auto 32px; color: var(--muted); font-size: 16px; }
+  .cta-row { display: flex; gap: 14px; justify-content: center; flex-wrap: wrap; margin-bottom: 48px; }
+  .btn {
+    display: inline-flex; align-items: center; gap: 10px; padding: 14px 24px; border-radius: 12px;
+    font-family: var(--head); font-size: 12px; font-weight: 700; letter-spacing: 0.14em;
+    text-transform: uppercase; text-decoration: none; border: 1px solid transparent; transition: transform 0.15s, box-shadow 0.25s;
+  }
+  .btn:active { transform: translateY(1px); }
+  .btn-castor { color: #1a0e04; background: linear-gradient(100deg, var(--castor), var(--gold)); box-shadow: 0 0 28px rgba(255, 140, 66, 0.35); }
+  .btn-pollux { color: #060818; background: linear-gradient(100deg, var(--pollux-glow), var(--pollux)); box-shadow: 0 0 28px rgba(123, 92, 255, 0.35); }
+  .btn-ghost { color: var(--ink); background: var(--panel); border-color: var(--brd); backdrop-filter: blur(8px); }
+  .btn-ghost:hover { border-color: rgba(56,224,255,0.45); box-shadow: 0 0 22px rgba(56,224,255,0.18); transform: translateY(-2px); }
+  .btn-castor:hover, .btn-pollux:hover { transform: translateY(-2px); }
+
+  .twins {
+    display: grid; grid-template-columns: 1fr auto 1fr; gap: 20px; align-items: stretch;
+    margin-bottom: 64px;
+  }
+  @media (max-width: 860px) { .twins { grid-template-columns: 1fr; } .thread-bridge { display: none; } }
+  .twin {
+    background: var(--panel); border: 1px solid var(--brd); border-radius: var(--radius);
+    padding: 28px 26px; backdrop-filter: blur(10px); position: relative; overflow: hidden;
+    transition: border-color 0.25s, box-shadow 0.25s;
+  }
+  .twin:hover { box-shadow: 0 0 40px rgba(0,0,0,0.35) inset; }
+  .twin.castor { border-color: rgba(255, 179, 71, 0.35); }
+  .twin.castor:hover { border-color: rgba(255, 140, 66, 0.55); box-shadow: 0 0 36px rgba(255, 140, 66, 0.12); }
+  .twin.pollux { border-color: rgba(123, 92, 255, 0.35); }
+  .twin.pollux:hover { border-color: rgba(56, 224, 255, 0.45); box-shadow: 0 0 36px rgba(123, 92, 255, 0.14); }
+  .twin::before {
+    content: ""; position: absolute; inset: -40% -20% auto; height: 55%;
+    opacity: 0.12; pointer-events: none;
+  }
+  .twin.castor::before { background: radial-gradient(circle, var(--castor), transparent 70%); }
+  .twin.pollux::before { background: radial-gradient(circle, var(--pollux), transparent 70%); }
+  .twin-tag {
+    font-family: var(--head); font-size: 10px; letter-spacing: 0.24em; text-transform: uppercase;
+    margin-bottom: 10px; opacity: 0.85;
+  }
+  .twin.castor .twin-tag { color: var(--castor); }
+  .twin.pollux .twin-tag { color: var(--pollux-glow); }
+  .twin h2 { font-family: var(--head); font-size: 28px; letter-spacing: 0.12em; margin: 0 0 8px; }
+  .twin .role { color: var(--muted); font-size: 14px; margin-bottom: 16px; }
+  .twin p { margin: 0 0 18px; color: var(--ink); font-size: 15px; line-height: 1.55; }
+  .twin ul { margin: 0 0 20px; padding-left: 18px; color: var(--muted); font-size: 14px; }
+  .twin ul a { color: var(--ink); text-decoration: none; border-bottom: 1px solid rgba(255, 179, 71, 0.35); }
+  .twin ul a:hover { color: var(--castor); border-color: var(--castor); }
+  .twin li { margin-bottom: 6px; }
+  .thread-bridge {
+    display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 10px;
+    min-width: 88px; text-align: center;
+  }
+  .thread-bridge .orb {
+    width: 54px; height: 54px; border-radius: 50%;
+    background: radial-gradient(circle at 35% 30%, #fff8e8, var(--gold) 40%, var(--pollux) 85%);
+    box-shadow: 0 0 30px rgba(255, 213, 106, 0.45), 0 0 50px rgba(123, 92, 255, 0.35);
+    animation: orb 5s ease-in-out infinite;
+  }
+  @keyframes orb { 0%,100% { transform: scale(1); } 50% { transform: scale(1.08); } }
+  .thread-bridge span {
+    font-family: var(--head); font-size: 9px; letter-spacing: 0.2em; text-transform: uppercase; color: var(--faint);
+  }
+
+  section { padding: 52px 0; }
+  .sec-title {
+    font-family: var(--head); font-size: clamp(24px, 4vw, 36px); text-align: center;
+    letter-spacing: 0.1em; margin: 0 0 10px;
+  }
+  .sec-sub { text-align: center; color: var(--muted); max-width: 640px; margin: 0 auto 34px; font-size: 15px; }
+  .grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 18px; }
+  @media (max-width: 820px) { .grid { grid-template-columns: 1fr; } }
+  .card {
+    background: var(--panel); border: 1px solid var(--brd); border-radius: var(--radius);
+    padding: 22px 20px; backdrop-filter: blur(8px);
+  }
+  .card .icon { font-size: 28px; display: block; margin-bottom: 12px; }
+  .card h3 { font-family: var(--head); font-size: 15px; letter-spacing: 0.08em; margin: 0 0 8px; }
+  .card p { margin: 0; font-size: 14px; color: var(--muted); line-height: 1.55; }
+
+  .flow {
+    display: flex; flex-wrap: wrap; gap: 12px; justify-content: center; align-items: center;
+    max-width: 900px; margin: 0 auto; font-family: var(--head); font-size: 11px; letter-spacing: 0.14em;
+    text-transform: uppercase;
+  }
+  .flow .step {
+    padding: 12px 16px; border-radius: 999px; border: 1px solid var(--brd);
+    background: rgba(8, 14, 30, 0.55); color: var(--muted);
+  }
+  .flow .arrow { color: var(--faint); font-size: 16px; }
+
+  .quote {
+    max-width: 720px; margin: 0 auto; text-align: center; padding: 36px 28px;
+    border: 1px solid rgba(255, 213, 106, 0.22); border-radius: var(--radius);
+    background: linear-gradient(135deg, rgba(255, 140, 66, 0.06), rgba(123, 92, 255, 0.08));
+    font-family: var(--head); font-size: clamp(17px, 2.4vw, 22px); letter-spacing: 0.06em; line-height: 1.5;
+  }
+
+  footer {
+    border-top: 1px solid var(--brd); padding: 40px 0 56px; margin-top: 40px; text-align: center;
+  }
+  footer .links { display: flex; gap: 20px; justify-content: center; flex-wrap: wrap; margin-bottom: 16px; }
+  footer a { color: var(--pollux-glow); text-decoration: none; font-size: 14px; font-weight: 600; }
+  footer a:hover { text-decoration: underline; }
+  footer .copy { color: var(--faint); font-size: 13px; }
+  .collab-note {
+    max-width: 680px; margin: 18px auto 0; text-align: center;
+    font-size: 13px; color: var(--faint); line-height: 1.55;
+  }
+  .collab-note a {
+    color: #4de8ff; text-decoration: none; border-bottom: 1px dotted rgba(77, 232, 255, 0.45);
+  }
+  .collab-note a:hover { color: var(--gold); border-color: var(--gold); }
+  @media (max-width: 720px) { .nav-links a:not(.nav-cta) { display: none; } }
+</style>
+</head>
+<body>
+<canvas id="sky" aria-hidden="true"></canvas>
+<div class="nebula"></div>
+<div class="thread" aria-hidden="true"></div>
+
+<nav>
+  <div class="wrap row">
+    <div class="brand"><span class="gem"></span> DIOSCURI</div>
+    <div class="nav-links">
+      <a href="#twins" data-i18n="nav_twins">Twins</a>
+      <a href="#mind" data-i18n="nav_mind">One mind</a>
+      <a href="https://modeldev.modelmarket.dev/" target="_blank" rel="noopener" data-i18n="nav_ecosystem">Ecosystem</a>
+      <a href="https://magic-ai-factory.com/monitor/" target="_blank" rel="noopener" data-i18n="nav_monitor">Monitor</a>
+      <a class="nav-cta" href="https://github.com/alexar76/dioscuri" target="_blank" rel="noopener">GitHub ↗</a>
+      <span class="langsw" aria-label="Language">
+        <button type="button" data-lang="en">EN</button><button type="button" data-lang="ru">RU</button><button type="button" data-lang="es">ES</button><button type="button" data-lang="fr">FR</button><button type="button" data-lang="zh">ZH</button>
+      </span>
+    </div>
+  </div>
+</nav>
+
+<div class="wrap">
+  <header>
+    <div class="eyebrow"><span class="pip"></span> <span data-i18n="eyebrow">Community agents · AICOM · MIT</span></div>
+    <h1>DIOSCURI</h1>
+    <p class="myth" data-i18n="myth">In the myth, the twins split one immortality between two skies — forever pointing at each other's world.</p>
+    <p class="lede" data-i18n="lede">Twin AI community agents for the open agent economy. One process, two voices, one shared memory synced from GitHub, one moderation shield on a hostile public surface.</p>
+    <div class="cta-row">
+      <a class="btn btn-castor" href="https://t.me/next_agent_market_bot" target="_blank" rel="noopener" data-i18n="cta_castor">Ask Castor · bot</a>
+      <a class="btn btn-pollux" href="https://discord.gg/aimarket" target="_blank" rel="noopener" data-i18n="cta_pollux">☽ Pollux · Discord</a>
+      <a class="btn btn-ghost" href="https://github.com/alexar76/dioscuri/blob/main/docs/setup.md" target="_blank" rel="noopener" data-i18n="cta_deploy">Deploy your twins</a>
+    </div>
+    <p class="collab-note" data-i18n-html="collab_note">Collab · <a href="https://alexar76.github.io/theoros/" target="_blank" rel="noopener">THEOROS</a> drafts the weekly Agent Sovereignty Canon in <strong>#the-canon</strong> — separate persona, same DIOSCURI process (not a third twin).</p>
+  </header>
+
+  <section id="twins" class="twins">
+    <article class="twin castor" id="castor">
+      <div class="twin-tag" data-i18n="castor_tag">Mortal twin · fast lane</div>
+      <h2>CASTOR</h2>
+      <p class="role" data-i18n="castor_role">Telegram · grounded · practical</p>
+      <p data-i18n-html="castor_desc">Castor rides the mortal sky — ask in <strong>@next_agent_market_bot</strong> (bot / group); the <strong>@just_for_agents</strong> channel is news-only. He teases his immortal brother on Discord without missing a beat.</p>
+      <ul>
+        <li data-i18n-html="castor_li1">Community Q&amp;A in <a href="https://t.me/next_agent_market_bot" target="_blank" rel="noopener">@next_agent_market_bot</a></li>
+        <li data-i18n-html="castor_li2">News &amp; releases on <a href="https://t.me/just_for_agents" target="_blank" rel="noopener">@just_for_agents</a></li>
+        <li data-i18n="castor_li3">Moderation with AEGIS ceilings</li>
+        <li data-i18n="castor_li4">Cross-promo to Pollux's hall</li>
+      </ul>
+      <a class="btn btn-castor" href="https://t.me/next_agent_market_bot" target="_blank" rel="noopener" data-i18n="btn_ask_castor">Ask Castor</a>
+      <a class="btn btn-ghost" href="https://t.me/just_for_agents" target="_blank" rel="noopener" style="margin-left:10px" data-i18n="btn_news">News channel</a>
+    </article>
+
+    <div class="thread-bridge" aria-hidden="true">
+      <div class="orb"></div>
+      <span>MNEMOSYNE</span>
+      <span>AEGIS</span>
+    </div>
+
+    <article class="twin pollux" id="pollux">
+      <div class="twin-tag" data-i18n="pollux_tag">Immortal twin · deep hall</div>
+      <h2>POLLUX</h2>
+      <p class="role" data-i18n="pollux_role">Discord · structured · calm</p>
+      <p data-i18n="pollux_desc">Pollux holds the immortal sky — slash commands, mod logs, release threads, and the long-form hall where the ecosystem is discussed with structure.</p>
+      <ul>
+        <li data-i18n="pollux_li1">Guild provisioning &amp; mod log</li>
+        <li data-i18n="pollux_li2">Release announcements + KERYX syndication</li>
+        <li data-i18n="pollux_li3">Points mortals to Castor's channel</li>
+      </ul>
+      <a class="btn btn-pollux" href="https://github.com/alexar76/dioscuri/blob/main/docs/setup.md#discord-pollux" target="_blank" rel="noopener" data-i18n="btn_wire">Wire Discord</a>
+    </article>
+  </section>
+
+  <section id="mind">
+    <h2 class="sec-title" data-i18n="mind_title">One mind · two heavens</h2>
+    <p class="sec-sub" data-i18n="mind_sub">Shared layers behind both twins — no duplicate brains, no duplicate secrets in git.</p>
+    <div class="grid">
+      <div class="card">
+        <span class="icon">📚</span>
+        <h3>MNEMOSYNE</h3>
+        <p data-i18n="mne_desc">Self-syncing knowledge base from public GitHub — READMEs, releases, recent commits, live demo snapshots. Poisoned-document filtering on ingest.</p>
+      </div>
+      <div class="card">
+        <span class="icon">🛡️</span>
+        <h3>AEGIS</h3>
+        <p data-i18n="aegis_desc">Layered prompt-injection firewall (EN + RU), deterministic-first moderation, hash-chained audit. Warn · delete · timeout — never auto-ban.</p>
+      </div>
+      <div class="card">
+        <span class="icon">👁️</span>
+        <h3 data-i18n="monitor_t">Alien Monitor</h3>
+        <p data-i18n-html="monitor_desc">DIOSCURI appears as a live graph node — polls <code>/health</code>, shows adapter status and KB stats on the cosmic ecosystem map.</p>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <h2 class="sec-title" data-i18n="flow_title">How a question travels</h2>
+    <p class="sec-sub" data-i18n="flow_sub">Tool-less public path — retrieval before the model; the model only speaks.</p>
+    <div class="flow">
+      <span class="step" data-i18n="flow_s1">Message</span><span class="arrow">→</span>
+      <span class="step" data-i18n="flow_s2">AEGIS sanitize</span><span class="arrow">→</span>
+      <span class="step" data-i18n="flow_s3">MNEMOSYNE retrieve</span><span class="arrow">→</span>
+      <span class="step" data-i18n="flow_s4">LLM reply</span><span class="arrow">→</span>
+      <span class="step" data-i18n="flow_s5">Audit chain</span>
+    </div>
+  </section>
+
+  <section>
+    <blockquote class="quote" data-i18n-html="quote">«DIOSCURI — one mind, two heavens.»<br /><span style="font-size:0.72em;color:var(--muted);letter-spacing:0.18em">CASTOR ↔ POLLUX · shared MNEMOSYNE · shared AEGIS</span></blockquote>
+  </section>
+
+  <section style="text-align:center;padding-bottom:20px">
+    <div class="cta-row">
+      <a class="btn btn-ghost" href="https://magic-ai-factory.com/monitor/" target="_blank" rel="noopener" data-i18n="cta_monitor">See us on Alien Monitor</a>
+      <a class="btn btn-ghost" href="https://github.com/alexar76/aicom/blob/main/docs/ecosystem/dioscuri-integration.md" target="_blank" rel="noopener" data-i18n="cta_integration">Integration guide</a>
+      <a class="btn btn-pollux" href="https://github.com/alexar76/dioscuri" target="_blank" rel="noopener" data-i18n="cta_star">Star on GitHub</a>
+    </div>
+  </section>
+</div>
+
+<footer>
+  <div class="wrap">
+    <div class="links">
+      <a href="https://github.com/alexar76/dioscuri" data-i18n="foot_repo">Repository</a>
+      <a href="https://github.com/alexar76/dioscuri/blob/main/docs/setup.md" data-i18n="foot_setup">Setup</a>
+      <a href="https://github.com/alexar76/dioscuri/blob/main/docs/security.md" data-i18n="foot_security">Security</a>
+      <a href="https://modeldev.modelmarket.dev/" data-i18n="foot_ecosystem">AICOM ecosystem</a>
+      <a href="https://magic-ai-factory.com/monitor/" data-i18n="foot_monitor">Alien Monitor</a>
+      <a href="https://github.com/alexar76/dioscuri/blob/main/README-ru.md">Русский README</a>
+      <a href="https://github.com/alexar76/dioscuri/blob/main/README-es.md">README en español</a>
+    </div>
+    <p class="copy" data-i18n-html="foot_copy">Part of the AICOM open agent economy · MIT · built by <a href="https://github.com/alexar76">@alexar76</a></p>
+  </div>
+</footer>
+
+<script>
+(() => {
+  const canvas = document.getElementById('sky');
+  const ctx = canvas.getContext('2d');
+  const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  let W, H, DPR, cx, cy;
+  const mouse = { x: 0, y: 0, tx: 0, ty: 0 };
+
+  function resize() {
+    DPR = Math.min(window.devicePixelRatio || 1, 2);
+    W = canvas.width = innerWidth * DPR;
+    H = canvas.height = innerHeight * DPR;
+    canvas.style.width = innerWidth + 'px';
+    canvas.style.height = innerHeight + 'px';
+    cx = W / 2; cy = H / 2;
+  }
+  resize();
+  addEventListener('resize', resize);
+  addEventListener('mousemove', e => { mouse.tx = (e.clientX / innerWidth - 0.5); mouse.ty = (e.clientY / innerHeight - 0.5); });
+
+  const area = innerWidth * innerHeight;
+  const COUNT = Math.max(120, Math.min(480, Math.floor(area / 2800)));
+  const stars = [];
+  const palette = ['#ffb347', '#ffd56a', '#38e0ff', '#7b5cff', '#ffffff', '#4dffb8'];
+  for (let i = 0; i < COUNT; i++) {
+    stars.push({
+      x: Math.random() * 2 - 1, y: Math.random() * 2 - 1,
+      z: Math.random() * 0.88 + 0.12,
+      r: Math.random() * 1.3 + 0.35,
+      c: palette[(Math.random() * palette.length) | 0],
+      tw: Math.random() * Math.PI * 2
+    });
+  }
+
+  const twins = [
+    { a: -0.72, color: '#ffb347', label: 'Castor' },
+    { a: 0.72, color: '#7b5cff', label: 'Pollux' }
+  ];
+
+  const warp = reduce ? 0.0003 : 0.0016;
+  const drift = reduce ? 0.2 : 1;
+  let t = 0;
+
+  function frame() {
+    t += 1;
+    mouse.x += (mouse.tx - mouse.x) * 0.04;
+    mouse.y += (mouse.ty - mouse.y) * 0.04;
+    ctx.clearRect(0, 0, W, H);
+    const minDim = Math.min(W, H);
+    const spread = Math.max(W, H) * 0.58;
+    const px = mouse.x * 0.08 * minDim, py = mouse.y * 0.08 * minDim;
+
+    for (const s of stars) {
+      s.z -= warp;
+      if (s.z <= 0.02) { s.z = 1; s.x = Math.random() * 2 - 1; s.y = Math.random() * 2 - 1; }
+      const k = 0.26 / s.z;
+      const sx = cx + s.x * spread * k + px * (1 - s.z);
+      const sy = cy + s.y * spread * k + py * (1 - s.z);
+      const depth = 1 - s.z;
+      const tw = 0.5 + 0.5 * Math.sin(t * 0.028 + s.tw);
+      ctx.globalAlpha = Math.min(1, (0.22 + depth) * 1.25) * tw;
+      ctx.fillStyle = s.c;
+      ctx.beginPath();
+      ctx.arc(sx, sy, s.r * (0.45 + depth * 2.1) * DPR, 0, 7);
+      ctx.fill();
+    }
+
+    twins.forEach((tw, i) => {
+      const r = minDim * 0.28;
+      const ang = tw.a + Math.sin(t * 0.002 + i) * 0.04 * drift;
+      const x = cx + Math.cos(ang) * r + px * 1.2;
+      const y = cy * 0.92 + Math.sin(ang) * r * 0.35 + py * 1.2;
+      const pulse = 0.85 + 0.15 * Math.sin(t * 0.04 + i * 1.7);
+      ctx.globalAlpha = 0.55 * pulse;
+      ctx.strokeStyle = tw.color;
+      ctx.lineWidth = 1.2 * DPR;
+      ctx.beginPath();
+      ctx.arc(x, y, 22 * DPR * pulse, 0, 7);
+      ctx.stroke();
+      ctx.globalAlpha = 0.9 * pulse;
+      ctx.fillStyle = tw.color;
+      ctx.beginPath();
+      ctx.arc(x, y, 5 * DPR * pulse, 0, 7);
+      ctx.fill();
+    });
+
+    ctx.globalAlpha = 0.25;
+    ctx.strokeStyle = '#ffd56a';
+    ctx.lineWidth = 1 * DPR;
+    ctx.setLineDash([6 * DPR, 10 * DPR]);
+    ctx.beginPath();
+    const r2 = minDim * 0.28;
+    ctx.moveTo(cx + Math.cos(twins[0].a) * r2 + px, cy * 0.92 + Math.sin(twins[0].a) * r2 * 0.35 + py);
+    ctx.lineTo(cx + Math.cos(twins[1].a) * r2 + px, cy * 0.92 + Math.sin(twins[1].a) * r2 * 0.35 + py);
+    ctx.stroke();
+    ctx.setLineDash([]);
+
+    requestAnimationFrame(frame);
+  }
+  frame();
+})();
+</script>
+
+<script>
+const I18N = {
+  en: {
+    nav_twins:"Twins", nav_mind:"One mind", nav_ecosystem:"Ecosystem", nav_monitor:"Monitor",
+    eyebrow:"Community agents · AICOM · MIT",
+    myth:"In the myth, the twins split one immortality between two skies — forever pointing at each other's world.",
+    lede:"Twin AI community agents for the open agent economy. One process, two voices, one shared memory synced from GitHub, one moderation shield on a hostile public surface.",
+    cta_castor:"Ask Castor · bot", cta_pollux:"☽ Pollux · Discord", cta_deploy:"Deploy your twins",
+    collab_note:"Collab · <a href='https://alexar76.github.io/theoros/' target='_blank' rel='noopener'>THEOROS</a> drafts the weekly Agent Sovereignty Canon in <strong>#the-canon</strong> — separate persona, same DIOSCURI process (not a third twin).",
+    castor_tag:"Mortal twin · fast lane",
+    castor_role:"Telegram · grounded · practical",
+    castor_desc:"Castor rides the mortal sky — ask in <strong>@next_agent_market_bot</strong> (bot / group); the <strong>@just_for_agents</strong> channel is news-only. He teases his immortal brother on Discord without missing a beat.",
+    castor_li1:"Community Q&amp;A in <a href='https://t.me/next_agent_market_bot' target='_blank' rel='noopener'>@next_agent_market_bot</a>",
+    castor_li2:"News &amp; releases on <a href='https://t.me/just_for_agents' target='_blank' rel='noopener'>@just_for_agents</a>",
+    castor_li3:"Moderation with AEGIS ceilings",
+    castor_li4:"Cross-promo to Pollux's hall",
+    btn_ask_castor:"Ask Castor", btn_news:"News channel",
+    pollux_tag:"Immortal twin · deep hall",
+    pollux_role:"Discord · structured · calm",
+    pollux_desc:"Pollux holds the immortal sky — slash commands, mod logs, release threads, and the long-form hall where the ecosystem is discussed with structure.",
+    pollux_li1:"Guild provisioning & mod log",
+    pollux_li2:"Release announcements + KERYX syndication",
+    pollux_li3:"Points mortals to Castor's channel",
+    btn_wire:"Wire Discord",
+    mind_title:"One mind · two heavens",
+    mind_sub:"Shared layers behind both twins — no duplicate brains, no duplicate secrets in git.",
+    mne_desc:"Self-syncing knowledge base from public GitHub — READMEs, releases, recent commits, live demo snapshots. Poisoned-document filtering on ingest.",
+    aegis_desc:"Layered prompt-injection firewall (EN + RU), deterministic-first moderation, hash-chained audit. Warn · delete · timeout — never auto-ban.",
+    monitor_t:"Alien Monitor",
+    monitor_desc:"DIOSCURI appears as a live graph node — polls <code>/health</code>, shows adapter status and KB stats on the cosmic ecosystem map.",
+    flow_title:"How a question travels",
+    flow_sub:"Tool-less public path — retrieval before the model; the model only speaks.",
+    flow_s1:"Message", flow_s2:"AEGIS sanitize", flow_s3:"MNEMOSYNE retrieve", flow_s4:"LLM reply", flow_s5:"Audit chain",
+    quote:"«DIOSCURI — one mind, two heavens.»<br /><span style='font-size:0.72em;color:var(--muted);letter-spacing:0.18em'>CASTOR ↔ POLLUX · shared MNEMOSYNE · shared AEGIS</span>",
+    cta_monitor:"See us on Alien Monitor", cta_integration:"Integration guide", cta_star:"Star on GitHub",
+    foot_repo:"Repository", foot_setup:"Setup", foot_security:"Security", foot_ecosystem:"AICOM ecosystem", foot_monitor:"Alien Monitor",
+    foot_copy:"Part of the AICOM open agent economy · MIT · built by <a href='https://github.com/alexar76'>@alexar76</a>",
+  },
+  ru: {
+    nav_twins:"Близнецы", nav_mind:"Один разум", nav_ecosystem:"Экосистема", nav_monitor:"Монитор",
+    eyebrow:"Агенты сообщества · AICOM · MIT",
+    myth:"В мифе близнецы делят одно бессмертие на два неба — навсегда указывая на мир друг друга.",
+    lede:"Парные ИИ-агенты сообщества для открытой экономики агентов. Один процесс, два голоса, одна общая память, синхронизируемая из GitHub, один щит модерации на враждебной публичной поверхности.",
+    cta_castor:"Спросить Castor · бот", cta_pollux:"☽ Pollux · Discord", cta_deploy:"Разверни своих близнецов",
+    collab_note:"Коллаб · <a href='https://alexar76.github.io/theoros/' target='_blank' rel='noopener'>THEOROS</a> еженедельно составляет Agent Sovereignty Canon в <strong>#the-canon</strong> — отдельная персона, тот же процесс DIOSCURI (не третий близнец).",
+    castor_tag:"Смертный близнец · быстрая полоса",
+    castor_role:"Telegram · приземлённый · практичный",
+    castor_desc:"Castor правит смертным небом — спрашивай в <strong>@next_agent_market_bot</strong> (бот / группа); канал <strong>@just_for_agents</strong> только для новостей. Он без запинки подтрунивает над бессмертным братом в Discord.",
+    castor_li1:"Вопросы и ответы сообщества в <a href='https://t.me/next_agent_market_bot' target='_blank' rel='noopener'>@next_agent_market_bot</a>",
+    castor_li2:"Новости и релизы в <a href='https://t.me/just_for_agents' target='_blank' rel='noopener'>@just_for_agents</a>",
+    castor_li3:"Модерация с ограничениями AEGIS",
+    castor_li4:"Кросс-промо в зал Pollux",
+    btn_ask_castor:"Спросить Castor", btn_news:"Канал новостей",
+    pollux_tag:"Бессмертный близнец · глубокий зал",
+    pollux_role:"Discord · структурированный · спокойный",
+    pollux_desc:"Pollux держит бессмертное небо — слэш-команды, журналы модерации, ветки релизов и просторный зал, где экосистема обсуждается структурированно.",
+    pollux_li1:"Настройка гильдии и журнал модерации",
+    pollux_li2:"Анонсы релизов + синдикация KERYX",
+    pollux_li3:"Направляет смертных в канал Castor",
+    btn_wire:"Подключить Discord",
+    mind_title:"Один разум · два неба",
+    mind_sub:"Общие слои за обоими близнецами — без дублирующих мозгов, без дублирующих секретов в git.",
+    mne_desc:"Самосинхронизирующаяся база знаний из публичного GitHub — README, релизы, свежие коммиты, снимки живых демо. Фильтрация отравленных документов при загрузке.",
+    aegis_desc:"Многослойный файрвол от инъекций в промпт (EN + RU), детерминированная в первую очередь модерация, аудит с хеш-цепочкой. Предупреждение · удаление · тайм-аут — никогда автоматический бан.",
+    monitor_t:"Alien Monitor",
+    monitor_desc:"DIOSCURI появляется как живой узел графа — опрашивает <code>/health</code>, показывает статус адаптеров и статистику базы знаний на космической карте экосистемы.",
+    flow_title:"Как путешествует вопрос",
+    flow_sub:"Публичный путь без инструментов — извлечение до модели; модель только отвечает.",
+    flow_s1:"Сообщение", flow_s2:"AEGIS очистка", flow_s3:"MNEMOSYNE извлечение", flow_s4:"Ответ LLM", flow_s5:"Цепочка аудита",
+    quote:"«DIOSCURI — один разум, два неба.»<br /><span style='font-size:0.72em;color:var(--muted);letter-spacing:0.18em'>CASTOR ↔ POLLUX · общий MNEMOSYNE · общий AEGIS</span>",
+    cta_monitor:"Смотри нас в Alien Monitor", cta_integration:"Руководство по интеграции", cta_star:"Звезда на GitHub",
+    foot_repo:"Репозиторий", foot_setup:"Установка", foot_security:"Безопасность", foot_ecosystem:"Экосистема AICOM", foot_monitor:"Alien Monitor",
+    foot_copy:"Часть открытой экономики агентов AICOM · MIT · создано <a href='https://github.com/alexar76'>@alexar76</a>",
+  },
+  es: {
+    nav_twins:"Gemelos", nav_mind:"Una mente", nav_ecosystem:"Ecosistema", nav_monitor:"Monitor",
+    eyebrow:"Agentes de comunidad · AICOM · MIT",
+    myth:"En el mito, los gemelos reparten una sola inmortalidad entre dos cielos — señalando para siempre el mundo del otro.",
+    lede:"Agentes gemelos de comunidad con IA para la economía de agentes abierta. Un proceso, dos voces, una memoria compartida sincronizada desde GitHub, un escudo de moderación en una superficie pública hostil.",
+    cta_castor:"Pregunta a Castor · bot", cta_pollux:"☽ Pollux · Discord", cta_deploy:"Despliega tus gemelos",
+    collab_note:"Colab · <a href='https://alexar76.github.io/theoros/' target='_blank' rel='noopener'>THEOROS</a> redacta el Agent Sovereignty Canon semanal en <strong>#the-canon</strong> — persona aparte, el mismo proceso DIOSCURI (no un tercer gemelo).",
+    castor_tag:"Gemelo mortal · vía rápida",
+    castor_role:"Telegram · realista · práctico",
+    castor_desc:"Castor cabalga el cielo mortal — pregunta en <strong>@next_agent_market_bot</strong> (bot / grupo); el canal <strong>@just_for_agents</strong> es solo de noticias. Se burla de su hermano inmortal en Discord sin perder el ritmo.",
+    castor_li1:"Preguntas y respuestas de la comunidad en <a href='https://t.me/next_agent_market_bot' target='_blank' rel='noopener'>@next_agent_market_bot</a>",
+    castor_li2:"Noticias y lanzamientos en <a href='https://t.me/just_for_agents' target='_blank' rel='noopener'>@just_for_agents</a>",
+    castor_li3:"Moderación con límites de AEGIS",
+    castor_li4:"Promoción cruzada al salón de Pollux",
+    btn_ask_castor:"Pregunta a Castor", btn_news:"Canal de noticias",
+    pollux_tag:"Gemelo inmortal · salón profundo",
+    pollux_role:"Discord · estructurado · tranquilo",
+    pollux_desc:"Pollux sostiene el cielo inmortal — comandos slash, registros de moderación, hilos de lanzamiento y el salón extenso donde el ecosistema se debate con estructura.",
+    pollux_li1:"Aprovisionamiento del gremio y registro de moderación",
+    pollux_li2:"Anuncios de lanzamiento + sindicación KERYX",
+    pollux_li3:"Dirige a los mortales al canal de Castor",
+    btn_wire:"Conectar Discord",
+    mind_title:"Una mente · dos cielos",
+    mind_sub:"Capas compartidas detrás de ambos gemelos — sin cerebros duplicados, sin secretos duplicados en git.",
+    mne_desc:"Base de conocimiento con autosincronización desde GitHub público — READMEs, lanzamientos, commits recientes, capturas de demos en vivo. Filtrado de documentos envenenados al ingerir.",
+    aegis_desc:"Cortafuegos por capas contra inyección de prompts (EN + RU), moderación determinista primero, auditoría encadenada por hash. Advertir · eliminar · timeout — nunca ban automático.",
+    monitor_t:"Alien Monitor",
+    monitor_desc:"DIOSCURI aparece como un nodo vivo del grafo — sondea <code>/health</code>, muestra el estado de los adaptadores y estadísticas de la base de conocimiento en el mapa cósmico del ecosistema.",
+    flow_title:"Cómo viaja una pregunta",
+    flow_sub:"Ruta pública sin herramientas — recuperación antes del modelo; el modelo solo habla.",
+    flow_s1:"Mensaje", flow_s2:"AEGIS saneamiento", flow_s3:"MNEMOSYNE recuperación", flow_s4:"Respuesta LLM", flow_s5:"Cadena de auditoría",
+    quote:"«DIOSCURI — una mente, dos cielos.»<br /><span style='font-size:0.72em;color:var(--muted);letter-spacing:0.18em'>CASTOR ↔ POLLUX · MNEMOSYNE compartido · AEGIS compartido</span>",
+    cta_monitor:"Míranos en Alien Monitor", cta_integration:"Guía de integración", cta_star:"Estrella en GitHub",
+    foot_repo:"Repositorio", foot_setup:"Configuración", foot_security:"Seguridad", foot_ecosystem:"Ecosistema AICOM", foot_monitor:"Alien Monitor",
+    foot_copy:"Parte de la economía de agentes abierta AICOM · MIT · creado por <a href='https://github.com/alexar76'>@alexar76</a>",
+  },
+  fr: {
+    nav_twins:"Jumeaux", nav_mind:"Un esprit", nav_ecosystem:"Écosystème", nav_monitor:"Monitor",
+    eyebrow:"Agents de communauté · AICOM · MIT",
+    myth:"Dans le mythe, les jumeaux partagent une seule immortalité entre deux cieux — désignant à jamais le monde de l'autre.",
+    lede:"Agents de communauté jumeaux à IA pour l'économie ouverte des agents. Un processus, deux voix, une mémoire partagée synchronisée depuis GitHub, un bouclier de modération sur une surface publique hostile.",
+    cta_castor:"Demander à Castor · bot", cta_pollux:"☽ Pollux · Discord", cta_deploy:"Déploie tes jumeaux",
+    collab_note:"Collab · <a href='https://alexar76.github.io/theoros/' target='_blank' rel='noopener'>THEOROS</a> rédige chaque semaine l'Agent Sovereignty Canon dans <strong>#the-canon</strong> — persona distincte, le même processus DIOSCURI (pas un troisième jumeau).",
+    castor_tag:"Jumeau mortel · voie rapide",
+    castor_role:"Telegram · concret · pratique",
+    castor_desc:"Castor chevauche le ciel mortel — pose ta question dans <strong>@next_agent_market_bot</strong> (bot / groupe) ; le canal <strong>@just_for_agents</strong> ne sert qu'aux actualités. Il taquine son frère immortel sur Discord sans jamais perdre le rythme.",
+    castor_li1:"Questions-réponses de la communauté dans <a href='https://t.me/next_agent_market_bot' target='_blank' rel='noopener'>@next_agent_market_bot</a>",
+    castor_li2:"Actualités et releases sur <a href='https://t.me/just_for_agents' target='_blank' rel='noopener'>@just_for_agents</a>",
+    castor_li3:"Modération avec les plafonds AEGIS",
+    castor_li4:"Promotion croisée vers la salle de Pollux",
+    btn_ask_castor:"Demander à Castor", btn_news:"Canal d'actualités",
+    pollux_tag:"Jumeau immortel · salle profonde",
+    pollux_role:"Discord · structuré · calme",
+    pollux_desc:"Pollux tient le ciel immortel — commandes slash, journaux de modération, fils de release et la grande salle où l'écosystème se discute avec structure.",
+    pollux_li1:"Provisionnement de la guilde et journal de modération",
+    pollux_li2:"Annonces de release + syndication KERYX",
+    pollux_li3:"Oriente les mortels vers le canal de Castor",
+    btn_wire:"Brancher Discord",
+    mind_title:"Un esprit · deux cieux",
+    mind_sub:"Des couches partagées derrière les deux jumeaux — pas de cerveaux dupliqués, pas de secrets dupliqués dans git.",
+    mne_desc:"Base de connaissances auto-synchronisée depuis le GitHub public — READMEs, releases, commits récents, instantanés de démos en direct. Filtrage des documents empoisonnés à l'ingestion.",
+    aegis_desc:"Pare-feu anti-injection de prompt en couches (EN + RU), modération d'abord déterministe, audit chaîné par hash. Avertir · supprimer · timeout — jamais de bannissement automatique.",
+    monitor_t:"Alien Monitor",
+    monitor_desc:"DIOSCURI apparaît comme un nœud vivant du graphe — interroge <code>/health</code>, affiche l'état des adaptateurs et les stats de la base de connaissances sur la carte cosmique de l'écosystème.",
+    flow_title:"Le parcours d'une question",
+    flow_sub:"Chemin public sans outils — récupération avant le modèle ; le modèle ne fait que parler.",
+    flow_s1:"Message", flow_s2:"AEGIS nettoyage", flow_s3:"MNEMOSYNE récupération", flow_s4:"Réponse LLM", flow_s5:"Chaîne d'audit",
+    quote:"«DIOSCURI — un esprit, deux cieux.»<br /><span style='font-size:0.72em;color:var(--muted);letter-spacing:0.18em'>CASTOR ↔ POLLUX · MNEMOSYNE partagé · AEGIS partagé</span>",
+    cta_monitor:"Retrouve-nous sur Alien Monitor", cta_integration:"Guide d'intégration", cta_star:"Star sur GitHub",
+    foot_repo:"Dépôt", foot_setup:"Installation", foot_security:"Sécurité", foot_ecosystem:"Écosystème AICOM", foot_monitor:"Alien Monitor",
+    foot_copy:"Fait partie de l'économie ouverte des agents AICOM · MIT · créé par <a href='https://github.com/alexar76'>@alexar76</a>",
+  },
+  zh: {
+    nav_twins:"双子", nav_mind:"同一心智", nav_ecosystem:"生态系统", nav_monitor:"监视器",
+    eyebrow:"社区智能体 · AICOM · MIT",
+    myth:"在神话中，这对双子将一份不朽分给两片天空——永远指向彼此的世界。",
+    lede:"面向开放智能体经济的孪生 AI 社区智能体。一个进程、两种声音、一份从 GitHub 同步的共享记忆、一道面向敌意公共环境的审核护盾。",
+    cta_castor:"问 Castor · 机器人", cta_pollux:"☽ Pollux · Discord", cta_deploy:"部署你的双子",
+    collab_note:"合作 · <a href='https://alexar76.github.io/theoros/' target='_blank' rel='noopener'>THEOROS</a> 每周在 <strong>#the-canon</strong> 起草 Agent Sovereignty Canon——独立人格，同一个 DIOSCURI 进程（并非第三个双子）。",
+    castor_tag:"凡人双子 · 快车道",
+    castor_role:"Telegram · 务实 · 实用",
+    castor_desc:"Castor 驰骋于凡人的天空——在 <strong>@next_agent_market_bot</strong>（机器人 / 群组）里提问；<strong>@just_for_agents</strong> 频道仅发布新闻。他在 Discord 上不失时机地调侃他不朽的兄弟。",
+    castor_li1:"在 <a href='https://t.me/next_agent_market_bot' target='_blank' rel='noopener'>@next_agent_market_bot</a> 进行社区问答",
+    castor_li2:"在 <a href='https://t.me/just_for_agents' target='_blank' rel='noopener'>@just_for_agents</a> 发布新闻与版本更新",
+    castor_li3:"带 AEGIS 上限的审核",
+    castor_li4:"向 Pollux 的殿堂交叉推广",
+    btn_ask_castor:"问 Castor", btn_news:"新闻频道",
+    pollux_tag:"不朽双子 · 深邃殿堂",
+    pollux_role:"Discord · 有条理 · 沉稳",
+    pollux_desc:"Pollux 执掌不朽的天空——斜杠命令、审核日志、发布话题，以及可以有条理地讨论生态系统的长篇殿堂。",
+    pollux_li1:"服务器配置与审核日志",
+    pollux_li2:"发布公告 + KERYX 联合发布",
+    pollux_li3:"把凡人指引到 Castor 的频道",
+    btn_wire:"接入 Discord",
+    mind_title:"同一心智 · 两片天空",
+    mind_sub:"两个双子背后的共享层——没有重复的大脑，git 里没有重复的密钥。",
+    mne_desc:"从公开 GitHub 自同步的知识库——README、发布、近期提交、实时演示快照。摄取时过滤被投毒的文档。",
+    aegis_desc:"分层的提示注入防火墙（EN + RU）、优先确定性的审核、哈希链式审计。警告 · 删除 · 禁言——绝不自动封禁。",
+    monitor_t:"Alien Monitor",
+    monitor_desc:"DIOSCURI 以实时图节点出现——轮询 <code>/health</code>，在宇宙般的生态系统地图上展示适配器状态与知识库统计。",
+    flow_title:"一个问题的旅程",
+    flow_sub:"无工具的公共路径——先检索再交给模型；模型只负责说话。",
+    flow_s1:"消息", flow_s2:"AEGIS 净化", flow_s3:"MNEMOSYNE 检索", flow_s4:"LLM 回复", flow_s5:"审计链",
+    quote:"«DIOSCURI——同一心智，两片天空。»<br /><span style='font-size:0.72em;color:var(--muted);letter-spacing:0.18em'>CASTOR ↔ POLLUX · 共享 MNEMOSYNE · 共享 AEGIS</span>",
+    cta_monitor:"在 Alien Monitor 上看我们", cta_integration:"集成指南", cta_star:"在 GitHub 上点 Star",
+    foot_repo:"仓库", foot_setup:"安装", foot_security:"安全", foot_ecosystem:"AICOM 生态系统", foot_monitor:"Alien Monitor",
+    foot_copy:"AICOM 开放智能体经济的一部分 · MIT · 由 <a href='https://github.com/alexar76'>@alexar76</a> 构建",
+  },
+};
+const SUP = ["en", "ru", "es", "fr", "zh"];
+let lang = "en";
+try {
+  const saved = localStorage.getItem("dioscuri-landing-lang");
+  if (saved && SUP.includes(saved)) lang = saved;
+  else { const n = (navigator.language || "en").slice(0, 2).toLowerCase(); if (SUP.includes(n)) lang = n; }
+} catch (_) {}
+const t = k => (I18N[lang] && I18N[lang][k]) || I18N.en[k] || k;
+
+function applyLang() {
+  document.documentElement.lang = lang;
+  document.querySelectorAll("[data-i18n]").forEach(el => { const v = t(el.getAttribute("data-i18n")); if (v) el.textContent = v; });
+  document.querySelectorAll("[data-i18n-html]").forEach(el => { const v = t(el.getAttribute("data-i18n-html")); if (v) el.innerHTML = v; });
+  document.querySelectorAll(".langsw button").forEach(b => b.classList.toggle("on", b.dataset.lang === lang));
+}
+
+function setLang(l) {
+  if (!SUP.includes(l)) return;
+  lang = l;
+  try { localStorage.setItem("dioscuri-landing-lang", l); } catch (_) {}
+  applyLang();
+}
+document.querySelectorAll(".langsw button").forEach(b => b.addEventListener("click", () => setLang(b.dataset.lang)));
+
+applyLang();
+</script>
+</body>
+</html>

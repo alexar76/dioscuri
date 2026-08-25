@@ -1,0 +1,13 @@
+node_modules
+dist
+coverage
+data
+.env
+dioscuri.config.json
+*.log
+.git
+.github
+docs
+test
+README*.md
+CHANGELOG.md
