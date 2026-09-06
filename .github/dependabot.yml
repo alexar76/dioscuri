@@ -1,0 +1,32 @@
+# Dependabot — automated dependency updates for npm (both runtime and dev).
+# Runs weekly, groups minor/patch updates into one PR, caps open PRs at 5.
+version: 2
+updates:
+  - package-ecosystem: "npm"
+    directory: "/"
+    schedule:
+      interval: "weekly"
+      day: "monday"
+      time: "09:27"
+      timezone: "Etc/UTC"
+    open-pull-requests-limit: 5
+    groups:
+      dev-deps:
+        patterns:
+          - "typescript"
+          - "tsx"
+          - "vitest"
+          - "@vitest/*"
+          - "@types/*"
+        update-types:
+          - "minor"
+          - "patch"
+
+  - package-ecosystem: "github-actions"
+    directory: "/"
+    schedule:
+      interval: "weekly"
+      day: "monday"
+      time: "09:27"
+      timezone: "Etc/UTC"
+    open-pull-requests-limit: 3
