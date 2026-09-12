@@ -1,0 +1,32 @@
+{
+  "compilerOptions": {
+    "target": "ES2022",
+    "lib": ["ES2023"],
+    "module": "NodeNext",
+    "moduleResolution": "NodeNext",
+    "rootDir": "src",
+    "outDir": "dist",
+    "declaration": true,
+    "declarationMap": true,
+    "sourceMap": true,
+    "strict": true,
+    "noUncheckedIndexedAccess": true,
+    "noImplicitOverride": true,
+    "noFallthroughCasesInSwitch": true,
+    "exactOptionalPropertyTypes": false,
+    "esModuleInterop": true,
+    "forceConsistentCasingInFileNames": true,
+    "resolveJsonModule": true,
+    "skipLibCheck": true,
+    "verbatimModuleSyntax": false
+  },
+  "include": ["src/**/*.ts"],
+  // src/images/cards.ts is an unfinished SVG→PNG card renderer (623fa430): it
+  // imports `sharp`, which is in neither package.json nor the lockfile, and three
+  // types that types.ts does not export. Nothing in src/ imports it, so it is not
+  // part of the running bot — but it does break `npm run build`, which is why the
+  // deployed image is older than the file. Excluded until it is finished; adding
+  // sharp means adding a native dependency to the image, which is a decision, not
+  // a build fix.
+  "exclude": ["node_modules", "dist", "test", "src/images/cards.ts", "src/images/cards-font.ts"]
+}
