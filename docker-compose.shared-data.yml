@@ -1,0 +1,14 @@
+# Host overlay — share /data with HELIOS (admin-vps: /root/ecosystem-data).
+# Without this, DIOSCURI writes helios-queue.jsonl to a private volume and HELIOS never sees it.
+#
+#   docker compose -f docker-compose.yml -f docker-compose.shared-data.yml up -d --build
+
+services:
+  dioscuri:
+    volumes:
+      - ${ECOSYSTEM_DATA_DIR:-/root/ecosystem-data}:/data
+    environment:
+      HELIOS_SYNDICATION: ${HELIOS_SYNDICATION:-1}
+      HELIOS_QUEUE_PATH: ${HELIOS_QUEUE_PATH:-/data/helios-queue.jsonl}
+      # Opt-in only — seasonal Calliope + Theoros are the main mix.
+      HELIOS_RELEASE_SHORTS: ${HELIOS_RELEASE_SHORTS:-0}
