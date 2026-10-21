@@ -26,8 +26,10 @@ describe("extractDemoUrl", () => {
   });
 
   it("skips admin and API paths", () => {
+    // The factory site is AICOM's own demo; the monitor moved to its own host on 2026-09-05
+    // and is the Alien Monitor's demo (above), not the factory's.
     const url = extractDemoUrl(AICOM_README);
-    expect(url).toBe("https://monitor.modelmarket.dev/");
+    expect(url).toBe("https://magic-ai-factory.com/");
     expect(url).not.toContain("/admin/");
     expect(url).not.toContain("/api/");
   });

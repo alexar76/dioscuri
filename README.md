@@ -9,7 +9,7 @@
 
 <!-- aicom-readme-badges -->
 <p align="center">
-  <a href="https://github.com/alexar76/dioscuri/actions/workflows/ci.yml"><img src="https://raw.githubusercontent.com/alexar76/dioscuri/refs/heads/main/docs/badges/ci.svg" alt="CI" /></a>
+  <a href="https://github.com/alexar76/dioscuri/actions/workflows/ci.yml"><img src="https://github.com/alexar76/dioscuri/actions/workflows/ci.yml/badge.svg" alt="CI" /></a>
   <a href="https://www.npmjs.com/package/@alexar76/dioscuri"><img src="https://raw.githubusercontent.com/alexar76/dioscuri/refs/heads/main/docs/badges/npm.svg" alt="npm" /></a>
   <a href="https://github.com/alexar76/dioscuri/releases"><img src="https://raw.githubusercontent.com/alexar76/dioscuri/refs/heads/main/docs/badges/release.svg" alt="Release" /></a>
   <a href="https://alexar76.github.io/dioscuri/"><img src="https://raw.githubusercontent.com/alexar76/dioscuri/refs/heads/main/docs/badges/pages.svg" alt="Landing" /></a>

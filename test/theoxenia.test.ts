@@ -181,7 +181,8 @@ interface Harness {
 
 const dirs: string[] = [];
 afterEach(() => {
-  while (dirs.length > 0) rmSync(dirs.pop()!, { recursive: true, force: true });
+  // maxRetries: a write the test started can still land while the tree is removed (ENOTEMPTY on CI).
+  while (dirs.length > 0) rmSync(dirs.pop()!, { recursive: true, force: true, maxRetries: 5, retryDelay: 50 });
 });
 
 function makeDir(): string {
