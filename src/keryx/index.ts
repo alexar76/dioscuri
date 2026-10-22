@@ -28,6 +28,8 @@ import { createXSink } from "./x.js";
 
 /** The whole herald message is sanitised to this many chars before fan-out. */
 const ANNOUNCE_MAX_CHARS = 480;
+/** A blog announcement stays under Bluesky's 300-grapheme limit, link included. */
+const BLOG_POST_MAX_CHARS = 290;
 /** Keep the summary sentence short so URL + community links always fit. */
 const SUMMARY_MAX_CHARS = 120;
 
@@ -107,6 +109,21 @@ export class Keryx {
         });
       }
     }
+  }
+
+  /**
+   * One line for a new blog article (src/keryx/blog.ts): its title and its link, nothing else. The
+   * title is shortened, never the link, so the whole post fits Bluesky's 300 graphemes.
+   */
+  composeBlogPost(post: { title: string; url: string }): string {
+    const head = "✎ New on the blog: ";
+    const room = Math.max(40, BLOG_POST_MAX_CHARS - head.length - 1 - post.url.length);
+    // "..." rather than "…": prepareUntrusted normalises to NFKC, which spells the ellipsis out anyway.
+    const title = [...post.title].length > room ? [...post.title].slice(0, room - 3).join("").trimEnd() + "..." : post.title;
+    const raw = [`${head}${title}`, post.url].join("\n");
+    return prepareUntrusted(raw, ANNOUNCE_MAX_CHARS)
+      .replaceAll("@everyone", "everyone")
+      .replaceAll("@here", "here");
   }
 
   hasSink(name: string): boolean {

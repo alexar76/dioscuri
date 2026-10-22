@@ -48,6 +48,7 @@ import { createImageProvider } from "./images/providers.js";
 import { createScreenshotProvider } from "./images/screenshots.js";
 import { armSinks, Keryx } from "./keryx/index.js";
 import { createDevtoDigest } from "./keryx/devto.js";
+import { BlogHerald } from "./keryx/blog.js";
 import { LiveStateSync } from "./showcase/livestate.js";
 import { SignalHeroPublisher, type HeroSink } from "./signal-hunt/heroes.js";
 import { provisionDiscord } from "./provision/discord.js";
@@ -370,6 +371,7 @@ async function main(): Promise<void> {
   // skipped and never touches the twins. Suppressed in dry-run mode.
   let devtoTimer: ReturnType<typeof setTimeout> | null = null;
   let keryx: Keryx | undefined;
+  let blogHerald: BlogHerald | undefined;
   if (cfg.tuning.syndication.enabled && !cfg.dryRun) {
     const sinks = armSinks(cfg.syndication, log.child("keryx"));
     if (sinks.length > 0) {
@@ -377,6 +379,25 @@ async function main(): Promise<void> {
       keryx = activeKeryx;
       kb.onRelease((ev) => void activeKeryx.announceRelease(ev));
       log.info("KERYX armed", { sinks: sinks.map((s) => s.name) });
+
+      // A new article on the operator's own blog (Atom feed) goes out once too. Off unless the
+      // operator names the feed: this satellite runs for other projects, never ours by default.
+      const blogFeedUrl = (process.env.KERYX_BLOG_FEED_URL ?? "").trim();
+      if (blogFeedUrl !== "") {
+        blogHerald = new BlogHerald({
+          feedUrl: blogFeedUrl,
+          pollIntervalMin: parseInt(process.env.KERYX_BLOG_POLL_MINUTES ?? "30", 10),
+          maxAgeHours: parseInt(process.env.KERYX_BLOG_MAX_AGE_HOURS ?? "24", 10),
+          maxPostsPerRun: 1,
+          sinks,
+          compose: (post) => activeKeryx.composeBlogPost(post),
+          dataDir: cfg.dataDir,
+          log: log.child("keryx.blog"),
+          audit,
+        });
+        blogHerald.start();
+        log.info("KERYX blog relay armed", { feed: blogFeedUrl, sinks: sinks.map((s) => s.name) });
+      }
     }
 
     if (cfg.syndication.devto.apiKey !== "") {
@@ -538,6 +559,7 @@ async function main(): Promise<void> {
         kb.stop();
         bulletinPublisher?.stop();
         heroPublisher?.stop();
+        blogHerald?.stop();
         await adapters.telegram?.stop();
         await adapters.discord?.stop();
         await health.close();
