@@ -198,7 +198,7 @@ Category: **📜 THE CANON**. Optional role: **`@canon-reader`** (opt-in ping on
     "oracles"
   ],
   "links": {
-    "discordInvite": "https://discord.gg/aimarket",
+    "discordInvite": "https://discord.gg/JjWxGhW9pP",
     "theorosUrl": "https://alexar76.github.io/theoros/",
     "siteUrl": "https://magic-ai-factory.com",
     "githubOrg": "https://github.com/alexar76"

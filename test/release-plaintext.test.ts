@@ -4,7 +4,7 @@ import { releaseBlurb, stripMarkdown } from "../src/shared/text.js";
 import type { CrossLinks, ReleaseEvent } from "../src/types.js";
 
 const LINKS: CrossLinks = {
-  discordInvite: "https://discord.gg/aimarket",
+  discordInvite: "https://discord.gg/JjWxGhW9pP",
   telegramChannel: "https://t.me/just_for_agents",
   siteUrl: "https://magic-ai-factory.com",
   githubOrg: "https://github.com/alexar76",

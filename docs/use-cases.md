@@ -340,7 +340,7 @@ A post after the fix looks like:
 ```
 ⚒ aimarket-agent v0.1.0 shipped — AIMarket Agent (Python client) v0.1.0 (early)
 https://github.com/alexar76/aimarket-agent/releases/tag/v0.1.0
-Community: https://discord.gg/aimarket | https://t.me/just_for_agents
+Community: https://discord.gg/JjWxGhW9pP | https://t.me/just_for_agents
 ```
 
 **Operational risks (still open).**
