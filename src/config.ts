@@ -8,6 +8,7 @@
 import { readFileSync } from "node:fs";
 import { z } from "zod";
 
+// Zod 4 prefault parses the empty input so nested field defaults still apply.
 const TuningSchema = z
   .object({
     githubOwner: z.string().min(1).default("alexar76"),
@@ -41,7 +42,7 @@ const TuningSchema = z
         linkAllowlist: z.array(z.string()).default([]),
         linkDenylist: z.array(z.string()).default([]),
       })
-      .default({}),
+      .prefault({}),
     links: z
       .object({
         discordInvite: z.string().default(""),
@@ -51,7 +52,7 @@ const TuningSchema = z
         githubOrg: z.string().default("https://github.com/alexar76"),
         theorosUrl: z.string().default("https://alexar76.github.io/theoros/"),
       })
-      .default({}),
+      .prefault({}),
     /**
      * KERYX (the herald): outbound syndication of release announcements to
      * social sinks + a monthly digest article on dev.to. POST-ONLY by charter
@@ -69,7 +70,7 @@ const TuningSchema = z
         devtoDigestDay: z.number().int().min(1).max(28).default(1),
         devtoDigestHourUtc: z.number().int().min(0).max(23).default(12),
       })
-      .default({}),
+      .prefault({}),
     /**
      * Project showcase: read-only polling of the ecosystem's PUBLIC demo
      * endpoints. Snapshots land in MNEMOSYNE as "live" chunks so the twins
@@ -92,7 +93,7 @@ const TuningSchema = z
             { name: "monitor-chain", url: "https://monitor.modelmarket.dev/api/chain/status", kind: "json" },
           ]),
       })
-      .default({}),
+      .prefault({}),
     content: z
       .object({
         enabled: z.boolean().default(true),
@@ -134,9 +135,9 @@ const TuningSchema = z
               .object({
                 enabled: z.boolean().default(true),
               })
-              .default({}),
+              .prefault({}),
           })
-          .default({}),
+          .prefault({}),
         /** Rotating grounding topics for spotlight/banter/poll generation. */
         topics: z
           .array(z.string())
@@ -158,7 +159,7 @@ const TuningSchema = z
             "benchmarks as jury duty — Council vs Solo challenge",
           ]),
       })
-      .default({}),
+      .prefault({}),
     /**
      * MOMUS security bulletin → the public #momus-bulletin channel.
      *
@@ -191,9 +192,9 @@ const TuningSchema = z
          */
         writeupBaseUrl: z.string().default(""),
       })
-      .default({}),
+      .prefault({}),
   })
-  .default({});
+  .prefault({});
 
 export type Tuning = z.infer<typeof TuningSchema>;
 

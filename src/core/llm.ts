@@ -27,6 +27,28 @@ const BACKOFF_BASE_MS = 500;
 const JITTER_MS = 250;
 /** Max chars of a provider response body quoted into an error message. */
 const BODY_EXCERPT_CHARS = 200;
+const MAX_RESPONSE_BYTES = 2 * 1024 * 1024;
+
+/** Fetch exposes decoded bytes. Refuse a provider body before JSON/schema parsing. */
+async function readResponseBody(response: Response): Promise<string> {
+  if (!response.body) return "";
+  const reader = response.body.getReader();
+  const chunks: Uint8Array[] = [];
+  let total = 0;
+  try {
+    for (;;) {
+      const { done, value } = await reader.read();
+      if (done) break;
+      total += value.byteLength;
+      if (total > MAX_RESPONSE_BYTES) throw new LlmError("LLM response exceeds 2 MiB");
+      chunks.push(value);
+    }
+  } finally {
+    await reader.cancel().catch(() => {});
+    reader.releaseLock();
+  }
+  return Buffer.concat(chunks, total).toString("utf8");
+}
 
 /**
  * Appended to the system prompt in json mode. Chat-completions providers also
@@ -171,6 +193,7 @@ export function createLlmClient(cfg: LlmConfig, log: Logger, opts: LlmClientOpts
           const ctrl = new AbortController();
           const timer = setTimeout(() => ctrl.abort(), cfg.timeoutMs);
           let res: Response;
+          let bodyText: string;
           try {
             res = await fetchFn(req.url, {
               method: "POST",
@@ -178,11 +201,13 @@ export function createLlmClient(cfg: LlmConfig, log: Logger, opts: LlmClientOpts
               body: req.body,
               signal: ctrl.signal,
             });
+            // The same deadline covers headers AND body consumption. Clearing
+            // it after fetch alone lets a provider trickle an unbounded body.
+            bodyText = await readResponseBody(res);
           } finally {
             clearTimeout(timer);
           }
 
-          const bodyText = await res.text();
           if (res.ok) {
             let text: string | undefined;
             try {

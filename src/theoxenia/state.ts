@@ -68,9 +68,9 @@ const StateSchema = z.object({
         .transform((v) => ({ hash: v.hash ?? v.h ?? "", ts: v.ts })),
     )
     .catch([]),
-  rotation: z.record(z.number()).catch({}),
+  rotation: z.record(z.string(), z.number()).catch({}),
   dailyCounts: z
-    .object({ date: z.string(), perPlatform: z.record(z.number()) })
+    .object({ date: z.string(), perPlatform: z.record(z.string(), z.number()) })
     .catch({ date: "", perPlatform: {} }),
   banterDirection: z.boolean().catch(true),
   spotlightPlatform: z.boolean().catch(true),

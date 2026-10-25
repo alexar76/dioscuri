@@ -64,11 +64,11 @@ const RecordSchema = z.object({
   /** When this revision was first announced (epoch ms) — drives the retry window. */
   postedAt: z.number().catch(0),
   /** sink name → platform message id ("" when the platform returned none). */
-  messages: z.record(z.string()).catch({}),
+  messages: z.record(z.string(), z.string()).catch({}),
 });
 
 const StateSchema = z.object({
-  posted: z.record(RecordSchema).catch({}),
+  posted: z.record(z.string(), RecordSchema).catch({}),
 });
 
 export type BulletinStateData = z.infer<typeof StateSchema>;

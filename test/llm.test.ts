@@ -4,7 +4,7 @@
  * injected fake fetch; no network, injected clock for the budget.
  */
 
-import { describe, expect, it } from "vitest";
+import { describe, expect, it, vi } from "vitest";
 import type { LlmConfig } from "../src/config.js";
 import { createLlmClient } from "../src/core/llm.js";
 import { LlmBudgetError, LlmError, type ChatOptions, type Logger } from "../src/types.js";
@@ -112,6 +112,43 @@ describe("createLlmClient — request shapes", () => {
 });
 
 describe("createLlmClient — retries and errors", () => {
+  it("cancels oversized streamed provider output before JSON/schema parsing, without retrying", async () => {
+    let cancelled = false;
+    const body = new ReadableStream<Uint8Array>({
+      pull(controller) { controller.enqueue(new Uint8Array(1024 * 1024)); },
+      cancel() { cancelled = true; },
+    });
+    const { fn, calls } = fetchQueue([new Response(body, { status: 200 })]);
+    const client = createLlmClient(cfg(), log, { fetchFn: fn });
+    await expect(client.chat(ask)).rejects.toThrow("response exceeds 2 MiB");
+    expect(cancelled).toBe(true);
+    expect(calls).toHaveLength(1);
+  });
+
+  it("keeps the provider deadline armed while waiting for body bytes", async () => {
+    vi.useFakeTimers();
+    let calls = 0;
+    const fetchFn: typeof fetch = async (_input, init) => {
+      calls++;
+      const signal = init?.signal;
+      if (!signal) throw new Error("request deadline signal missing");
+      return new Response(new ReadableStream<Uint8Array>({
+        start(controller) {
+          signal.addEventListener("abort", () => controller.error(new DOMException("Aborted", "AbortError")), { once: true });
+        },
+      }));
+    };
+    try {
+      const client = createLlmClient(cfg({ timeoutMs: 20 }), log, { fetchFn });
+      const result = expect(client.chat(ask)).rejects.toBeInstanceOf(LlmError);
+      await vi.runAllTimersAsync();
+      await result;
+      expect(calls).toBe(3);
+    } finally {
+      vi.useRealTimers();
+    }
+  });
+
   it("retries on 429 then succeeds", async () => {
     const { fn, calls } = fetchQueue([new Response("slow down", { status: 429 }), anthropicOk("ok!")]);
     const client = createLlmClient(cfg(), log, { fetchFn: fn });

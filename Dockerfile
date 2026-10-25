@@ -1,4 +1,5 @@
 # syntax=docker/dockerfile:1
+# Node security baseline: 22.23.4 (2026-10-21 security release).
 #
 # DIOSCURI — one mind, two heavens. Twin community agents for the AICOM ecosystem:
 # CASTOR rides Telegram, POLLUX holds Discord; one knowledge base (MNEMOSYNE),
@@ -9,7 +10,7 @@
 # so the container filesystem can run read-only (see docker-compose.yml).
 
 # ---- Stage 1: build (compile src/ -> dist/) -------------------------------------------------
-FROM node:22-slim AS build
+FROM node:22.23.4-slim AS build
 WORKDIR /app
 
 # Install deps first for better layer caching. package-lock.json is present in this repo.
@@ -22,7 +23,7 @@ COPY src ./src
 RUN npm run build
 
 # ---- Stage 2: runtime (lean production image) ----------------------------------------------
-FROM node:22-slim AS runtime
+FROM node:22.23.4-slim AS runtime
 WORKDIR /app
 ENV NODE_ENV=production
 
