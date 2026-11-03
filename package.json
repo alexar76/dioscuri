@@ -1,6 +1,6 @@
 {
   "name": "@alexar76/dioscuri",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "description": "DIOSCURI — one mind, two heavens. Twin community agents for the AICOM ecosystem: CASTOR rides Telegram, POLLUX holds Discord. Shared self-updating knowledge base (MNEMOSYNE, synced from GitHub) behind a prompt-injection firewall and moderation shield (AEGIS).",
   "type": "module",
   "license": "MIT",

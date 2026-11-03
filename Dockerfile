@@ -31,7 +31,7 @@ LABEL org.opencontainers.image.title="DIOSCURI" \
       org.opencontainers.image.description="Twin community agents for the AICOM ecosystem: CASTOR (Telegram) + POLLUX (Discord), one shared knowledge base behind a prompt-injection firewall." \
       org.opencontainers.image.source="https://github.com/alexar76/dioscuri" \
       org.opencontainers.image.licenses="MIT" \
-      org.opencontainers.image.version="0.1.0"
+      org.opencontainers.image.version="0.2.0"
 
 # Production deps only — no dev toolchain. Drop the image's bundled npm after
 # install so Trivy doesn't flag CRITICAL CVEs in npm's transitive `tar`

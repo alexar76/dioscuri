@@ -5,9 +5,25 @@ All notable changes to this project are documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [Unreleased]
+## [0.2.0] - 2026-11-03
+
+### Security
+
+- The audit chain stores a Telegram or Discord member as a keyed pseudonym
+  (`tg:h:<hmac>`, `dc:h:<hmac>`, key in `<dataDir>/audit-pseudonym.key`, mode 0600)
+  instead of the raw id. The chain is append-only, so a raw id could never be removed;
+  destroying the key unlinks every entry while each hash still verifies.
+- An LLM provider's answer is capped at 2 MiB, read under the same deadline as the
+  headers, before JSON or schema parsing.
+- MNEMOSYNE marks a release tag as seen only once its announcement exists, so a tag that
+  was published, seen and deleted no longer suppresses the real release under that name.
 
 ### Added
+
+- KERYX announces new blog articles from an Atom feed (`KERYX_BLOG_FEED_URL`, polled every
+  `KERYX_BLOG_POLL_MINUTES`, default 30).
+- Modules for community access, the MOMUS bulletin relay (every link in a relayed string
+  is de-fanged, punycode TLDs included), Signal Hunt, HELIOS shorts and THEOROS status.
 
 - **🎨 THE PANTHEON** Discord category: `#pantheon-arts` (AI visuals / memes,
   readonly) and `#pantheon-tales` (banter setups & punchlines, readonly).
@@ -19,6 +35,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   (weekly roll call + picks, readonly), `#demo-clinic` (feedback). Show-and-tell
   nudges post to `#gallery-spotlight` via `announceGallery()` instead of
   `#announcements`.
+
+### Changed
+
+- Zod 4 (`zod` 4.6.6, was ^3.24.1).
 
 ## [0.1.0] - 2026-07-04
 
