@@ -117,19 +117,37 @@ export function createBlueskySink(opts: {
     });
   }
 
+  /** The XRPC error code of a failed answer, e.g. " ExpiredToken" — never the message, which could echo input. */
+  async function errorCode(res: Response): Promise<string> {
+    try {
+      const data = (await res.clone().json()) as { error?: unknown };
+      return typeof data.error === "string" && /^[A-Za-z]{1,64}$/.test(data.error) ? ` ${data.error}` : "";
+    } catch {
+      return "";
+    }
+  }
+
+  async function sessionExpired(res: Response): Promise<boolean> {
+    if (res.status === 401) return true;
+    if (res.status !== 400) return false;
+    const code = (await errorCode(res)).trim();
+    return code === "ExpiredToken" || code === "InvalidToken";
+  }
+
   return {
     name: "bluesky",
     async post(text: string): Promise<void> {
       const body = truncateGraphemes(text, MAX_GRAPHEMES); // BEFORE facets
       let sess = await ensureSession();
       let res = await createRecord(sess, body);
-      if (res.status === 401) {
-        // Expired token: re-create the session exactly once and retry.
+      if (await sessionExpired(res)) {
+        // Expired token: re-create the session exactly once and retry. bsky.social answers an expired
+        // access JWT with 400 {"error":"ExpiredToken"}, not 401: from 2026-11-10 every post failed so.
         session = null;
         sess = await ensureSession();
         res = await createRecord(sess, body);
       }
-      if (!res.ok) throw new Error(`bluesky createRecord failed: HTTP ${res.status}`);
+      if (!res.ok) throw new Error(`bluesky createRecord failed: HTTP ${res.status}${await errorCode(res)}`);
       log.info("posted", { graphemes: graphemes(body).length });
     },
   };

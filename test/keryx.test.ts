@@ -174,6 +174,29 @@ describe("bluesky sink", () => {
     expect(headersOf(calls[3]!).Authorization).toBe("Bearer jwt-2");
   });
 
+  it("re-creates the session on 400 ExpiredToken, as bsky.social answers an old access jwt", async () => {
+    let sessions = 0;
+    const { sink, calls } = sinkWith((url, _init, n) => {
+      if (url.endsWith("createSession")) {
+        sessions += 1;
+        return jsonRes({ accessJwt: `jwt-${sessions}`, did: "did:plc:test" });
+      }
+      return n === 2 ? jsonRes({ error: "ExpiredToken", message: "Token has expired" }, 400) : jsonRes({ uri: "at://ok" });
+    });
+    await sink.post("Still here.");
+    expect(calls).toHaveLength(4); // session, 400 record, session, record
+    expect(headersOf(calls[3]!).Authorization).toBe("Bearer jwt-2");
+  });
+
+  it("does not re-authenticate on other 400s and names the XRPC error code", async () => {
+    const { sink, calls } = sinkWith((url) =>
+      url.endsWith("createSession")
+        ? jsonRes({ accessJwt: "jwt-1", did: "did:plc:test" })
+        : jsonRes({ error: "InvalidRequest", message: "Record/text must not be longer than 3000 graphemes" }, 400));
+    await expect(sink.post("x")).rejects.toThrow("bluesky createRecord failed: HTTP 400 InvalidRequest");
+    expect(calls).toHaveLength(2);
+  });
+
   it("throws with a scrubbed message on failure — the app password never leaks", async () => {
     const { sink } = sinkWith(() => {
       throw new Error("connect refused while sending app-pass-secret");
